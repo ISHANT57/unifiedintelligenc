@@ -40,8 +40,8 @@ export function usePrediction(): UsePredictionReturn {
       setResult(prediction);
       setIsLoading(false);
       
-      // Log to database
-      const { error: dbError } = await supabase
+      // Log to database and capture the inserted record ID
+      const { data: insertedRecord, error: dbError } = await supabase
         .from('predictions')
         .insert([{
           module_type: moduleType,
@@ -49,7 +49,9 @@ export function usePrediction(): UsePredictionReturn {
           prediction_result: prediction.prediction,
           confidence_score: prediction.confidence,
           risk_level: prediction.riskLevel,
-        }]);
+        }])
+        .select('id')
+        .single();
 
       if (dbError) {
         console.error('Failed to log prediction:', dbError);
@@ -78,13 +80,13 @@ export function usePrediction(): UsePredictionReturn {
       } else if (data?.explanation) {
         setExplanation(data.explanation);
         
-        // Update the prediction record with explanation
-        await supabase
-          .from('predictions')
-          .update({ ai_explanation: data.explanation })
-          .eq('prediction_result', prediction.prediction)
-          .order('created_at', { ascending: false })
-          .limit(1);
+        // Update the prediction record with explanation using the captured ID
+        if (insertedRecord?.id) {
+          await supabase
+            .from('predictions')
+            .update({ ai_explanation: data.explanation })
+            .eq('id', insertedRecord.id);
+        }
       }
     } catch (error) {
       console.error('Prediction error:', error);
