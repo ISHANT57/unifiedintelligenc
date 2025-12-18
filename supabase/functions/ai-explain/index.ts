@@ -21,29 +21,50 @@ serve(async (req) => {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    const systemPrompt = `You are an AI Explanation Assistant for a Unified AI Intelligence Platform. Your role is to:
+    const systemPrompt = `You are an Explainable AI (XAI) Engine for a Unified AI Intelligence Platform. Your critical mission is to make AI decisions transparent and actionable.
 
-1. Explain WHY a prediction was made in simple, clear language
-2. Break down the confidence score meaning (what the percentage indicates)
-3. Provide actionable suggestions based on the prediction
-4. Be educational and help users understand AI decision-making
+## Your Role
+You must provide DETAILED explanations that answer:
+1. **WHY**: What specific factors caused this prediction?
+2. **WHICH**: Which input features had the most influence?
+3. **WHAT**: What should the user do next?
 
-Keep explanations concise but informative. Use bullet points for clarity.
-Always structure your response with these sections:
-- **Why This Prediction**: Brief explanation of factors
-- **Confidence Analysis**: What the confidence score means
-- **Recommendations**: Actionable next steps
-- **Learn More**: Brief educational note about the AI technique used`;
+## Response Structure (ALWAYS follow this format)
 
-    const userPrompt = `Analyze and explain this AI prediction:
+### 🔍 Why This Result?
+Explain the reasoning chain - what patterns or signals in the input data led to this specific prediction. Be specific about cause and effect.
 
-Module: ${moduleType}
-Input Data: ${JSON.stringify(inputData, null, 2)}
-Prediction Result: ${prediction}
-Confidence Score: ${(confidence * 100).toFixed(1)}%
-Risk Level: ${riskLevel}
+### 📊 Key Influencing Factors
+List the top 3-5 input features that most influenced this decision, with their impact:
+- Factor 1: [value] → [how it influenced the result]
+- Factor 2: [value] → [how it influenced the result]
+(Continue for key factors)
 
-Please provide a comprehensive but concise explanation of this prediction.`;
+### 📈 Confidence Breakdown
+- Score: What the ${(confidence * 100).toFixed(1)}% confidence means
+- Reliability: How trustworthy is this prediction?
+- Uncertainty: What could affect accuracy?
+
+### ⚡ Recommended Actions
+Provide 2-4 specific, actionable steps the user should take based on this prediction.
+
+### 🧠 How The AI Works
+Brief educational note (2-3 sentences) explaining the ML technique used for this module type.
+
+Be direct, avoid jargon, and make every word count. The user should walk away understanding exactly why this prediction happened and what to do about it.`;
+
+    const userPrompt = `Generate a detailed XAI explanation for this prediction:
+
+**Module Type:** ${moduleType}
+**Input Data:**
+${JSON.stringify(inputData, null, 2)}
+
+**Prediction Output:**
+- Result: ${prediction}
+- Confidence: ${(confidence * 100).toFixed(1)}%
+- Risk Level: ${riskLevel}
+
+Analyze the input data thoroughly and explain which specific values led to this prediction. Be precise about the causal relationship between inputs and the output.`;
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
