@@ -9,6 +9,7 @@ import ContentIntelligence from "./pages/ContentIntelligence";
 import HealthPrediction from "./pages/HealthPrediction";
 import EnvironmentAI from "./pages/EnvironmentAI";
 import ImageAI from "./pages/ImageAI";
+import Analytics from "./pages/Analytics";
 import NotFound from "./pages/NotFound";
 import { AIChatAssistant } from "./components/AIChatAssistant";
 
@@ -24,6 +25,7 @@ function AppContent() {
     '/health': 'Health Prediction',
     '/environment': 'Environment & Crop AI',
     '/image': 'Image AI',
+    '/analytics': 'Analytics Dashboard',
   };
   
   const currentModule = moduleMap[location.pathname];
@@ -37,6 +39,7 @@ function AppContent() {
         <Route path="/health" element={<HealthPrediction />} />
         <Route path="/environment" element={<EnvironmentAI />} />
         <Route path="/image" element={<ImageAI />} />
+        <Route path="/analytics" element={<Analytics />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <AIChatAssistant context={{ currentModule }} />

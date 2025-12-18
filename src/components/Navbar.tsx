@@ -10,6 +10,7 @@ const navLinks = [
   { name: 'Health', href: '/health' },
   { name: 'Environment', href: '/environment' },
   { name: 'Image AI', href: '/image' },
+  { name: 'Analytics', href: '/analytics' },
 ];
 
 export function Navbar() {
